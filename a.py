@@ -29,7 +29,7 @@ with open('allow.txt', 'rt') as f:
 						nsLookupResult = err.output
 
 					nsLookupResult = nsLookupResult.decode('ASCII')
-					print("1 nsLookupResult ", nsLookupResult)
+#					print("1 nsLookupResult ", nsLookupResult)
 					ip = re.findall("127.", nsLookupResult)
 #					print('ip is ', ip)
 					sleepTime = random.uniform(0,3)
