@@ -37,10 +37,14 @@ with open('allow.txt', 'rt') as f:
 					except subprocess.TimeoutExpired as err:
 						nsLookupResult = err.output
 
-					nsLookupResult = nsLookupResult.decode('ASCII')
-#					print("1 nsLookupResult ", nsLookupResult)
-					ip = re.findall("127.", nsLookupResult)
-#					print('ip is ', ip)
+					if (nsLookupResult == None):
+						nsLookupResult = "SERVER FAIL ," + rev_host
+					else:
+						nsLookupResult = nsLookupResult.decode('ASCII')
+#						print("1 nsLookupResult ", nsLookupResult)
+						ip = re.findall("127.", nsLookupResult)
+#						print('ip is ', ip)
+
 					sleepTime = random.uniform(0,3)
 					time.sleep(sleepTime)
 					if (ip):
@@ -63,10 +67,14 @@ with open('allow.txt', 'rt') as f:
 				except subprocess.TimeoutExpired as err:
 					nsLookupResult = err.output
 
-				nsLookupResult = nsLookupResult.decode('ASCII')
-#				print("nsLookupResult ", nsLookupResult)
-				ip = re.findall("127.", nsLookupResult)
-#				print('ip is ', ip)
+				if (nsLookupResult == None):
+					nsLookupResult = "SERVER FAIL ," + rev_host
+				else:
+					nsLookupResult = nsLookupResult.decode('ASCII')
+#					print("1 nsLookupResult ", nsLookupResult)
+					ip = re.findall("127.", nsLookupResult)
+#					print('ip is ', ip)
+
 				sleepTime = random.uniform(0,3)
 				time.sleep(sleepTime)
 				if (ip):
