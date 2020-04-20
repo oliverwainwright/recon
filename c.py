@@ -23,7 +23,7 @@ with open('allow.txt', 'rt') as f:
 				rev_ip = (ipaddress.ip_address(host).reverse_pointer.split('in-addr.arpa'))
 
 				for blacklist in dnsbl_array:
-					#print('blacklist is ', blacklist)	
+					print('blacklist is ', blacklist)	
 					
 					#for blacklist in [ "spam.dnsbl.sorbs.net", "b.barracudacentral.org", "dnsbl.sorbs.net", "bl.spamcop.net" ]:
 					rev_host = rev_ip[0] + blacklist
@@ -48,8 +48,9 @@ with open('allow.txt', 'rt') as f:
 		else:
 			rev_ip = (ipaddress.ip_address(line).reverse_pointer.split('in-addr.arpa'))
 #			print("rev_ip is ", rev_ip)
-			for  blacklist in dnsbl_array:
 			#for blacklist in [ "spam.dnsbl.sorbs.net", "b.barracudacentral.org", "dnsbl.sorbs.net", "bl.spamcop.net" ]:
+			for  blacklist in dnsbl_array:
+				print('blacklist is ', blacklist)	
 				rev_host = rev_ip[0] + blacklist
 #				print("rev_host is ", rev_host)
 
