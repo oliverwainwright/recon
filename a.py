@@ -35,7 +35,7 @@ with open('allow.txt', 'rt') as f:
 					sleepTime = random.uniform(0,3)
 					time.sleep(sleepTime)
 					if (ip):
-						print("Bad Host Found " + str(line) + " in " + blacklist)
+						print("Bad Host Found " + str(host) + " in " + blacklist)
 		else:
 			rev_ip = (ipaddress.ip_address(line).reverse_pointer.split('in-addr.arpa'))
 #			print("rev_ip is ", rev_ip)
