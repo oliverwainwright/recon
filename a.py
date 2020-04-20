@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import ipaddress
-import socket
+import random
 import re
 import time
 import subprocess
@@ -32,7 +32,8 @@ with open('allow.txt', 'rt') as f:
 					print("1 nsLookupResult ", nsLookupResult)
 					ip = re.findall("127.", nsLookupResult)
 #					print('ip is ', ip)
-					time.sleep(1.2)
+					sleepTime = random.uniform(0,3)
+					time.sleep(sleepTime)
 					if (ip):
 						print("Bad Host Found " + str(line) + " in " + blacklist)
 		else:
@@ -52,6 +53,7 @@ with open('allow.txt', 'rt') as f:
 #				print("nsLookupResult ", nsLookupResult)
 				ip = re.findall("127.", nsLookupResult)
 #				print('ip is ', ip)
-				time.sleep(1.2)
+				sleepTime = random.uniform(0,3)
+				time.sleep(sleepTime)
 				if (ip):
 					print("Bad Host Found " + str(line) + " in " + blacklist)
