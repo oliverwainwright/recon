@@ -16,25 +16,42 @@ with open('allow.txt', 'rt') as f:
 			for host in net.hosts():
 				rev_ip = (ipaddress.ip_address(host).reverse_pointer.split('in-addr.arpa'))
 
+
+#				print("rev_ip is ", rev_ip)
 				for blacklist in [ "spam.dnsbl.sorbs.net", "b.barracudacentral.org", "dnsbl.sorbs.net", "bl.spamcop.net" ]:
-					print(rev_ip[0] + blacklist)
-					ip = re.findall("^127.", socket.gethostbyname(rev_ip[0] + blacklist))
+					rev_host = rev_ip[0] + blacklist
+#					print("rev_host is ", rev_host)
+
+					try:
+						nsLookupResult = subprocess.check_output(["/usr/bin/host", rev_host], stderr=subprocess.STDOUT)
+					except subprocess.CalledProcessError as err:
+						return_code = err.returncode
+						nsLookupResult = err.output
+
+					nsLookupResult = nsLookupResult.decode('ASCII')
+					print("1 nsLookupResult ", nsLookupResult)
+					ip = re.findall("127.", nsLookupResult)
+#					print('ip is ', ip)
 					time.sleep(1.2)
 					if (ip):
-						print("Bad Host Found " + str(host) + " in " + blacklist)
-
+						print("Bad Host Found " + str(line) + " in " + blacklist)
 		else:
 			rev_ip = (ipaddress.ip_address(line).reverse_pointer.split('in-addr.arpa'))
-			print("rev_ip is ", rev_ip)
+#			print("rev_ip is ", rev_ip)
 			for blacklist in [ "spam.dnsbl.sorbs.net", "b.barracudacentral.org", "dnsbl.sorbs.net", "bl.spamcop.net" ]:
 				rev_host = rev_ip[0] + blacklist
-				print("rev_host is ", rev_host)
-				#nsLookupResult = subprocess.run(["/usr/bin/host", rev_host], shell=True)
-				nsLookupResult = subprocess.check_output(["/usr/bin/host", rev_host])
+#				print("rev_host is ", rev_host)
+
+				try:
+					nsLookupResult = subprocess.check_output(["/usr/bin/host", rev_host], stderr=subprocess.STDOUT)
+				except subprocess.CalledProcessError as err:
+					return_code = err.returncode
+					nsLookupResult = err.output
+
 				nsLookupResult = nsLookupResult.decode('ASCII')
-				print("nsLookupResult ", nsLookupResult)
+#				print("nsLookupResult ", nsLookupResult)
 				ip = re.findall("127.", nsLookupResult)
-				print('ip is ', ip)
+#				print('ip is ', ip)
 				time.sleep(1.2)
 				if (ip):
 					print("Bad Host Found " + str(line) + " in " + blacklist)
