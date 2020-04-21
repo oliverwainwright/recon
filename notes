@@ -1,1 +1,12 @@
+lesson learned
+
+always normalize input
 normalize blacklists (dnsbl) before sort uniq by removing whitespaces
+
+validate output that will later be used as input
+
+less is more, create functions for code to be easily reused
+
+logging
+
+output reporting
