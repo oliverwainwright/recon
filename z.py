@@ -63,6 +63,7 @@ def myBlacklist(ipAddress):
 			badBoys.write("Bad Host Found " + str(ipAddress) + " in " + blacklist + "\n")
 
 def myWhois(ipAddress):
+	ipAddress = str(ipAddress)
 	details = handler.getDetails(ipAddress)
 	pprint.pprint(details.all)
 
@@ -79,10 +80,10 @@ with open('test.txt', 'rt') as f:
 			# pass cidr block to hosts() and loop through entire cidr block
 			for host in net.hosts():
 			
-				myWhois(str(host))
-				myBlacklist(str(host))
+				myWhois(host)
+				myBlacklist(host)
 		else:
-				myWhois(str(line))
-				myBlacklist(str(line))
+				myWhois(line)
+				myBlacklist(line)
 
 badBoys.close()
