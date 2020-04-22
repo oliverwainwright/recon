@@ -62,8 +62,10 @@ def myBlacklist(ipAddress):
 			print("Bad Host Found " + str(ipAddress) + " in " + blacklist)
 			badBoys.write("Bad Host Found " + str(ipAddress) + " in " + blacklist + "\n")
 
-		details = handler.getDetails(ipAddress)
-		pprint.pprint(details.all)
+def myWhois(ipAddress):
+	details = handler.getDetails(ipAddress)
+	pprint.pprint(details.all)
+
 
 # read ip address allow list, conists of host ip addresses an cidr notation networks
 with open('test.txt', 'rt') as f:
@@ -76,8 +78,11 @@ with open('test.txt', 'rt') as f:
 
 			# pass cidr block to hosts() and loop through entire cidr block
 			for host in net.hosts():
-				myBlacklist(host)
+			
+				myWhois(str(host))
+				myBlacklist(str(host))
 		else:
-				myBlacklist(line)
+				myWhois(str(line))
+				myBlacklist(str(line))
 
 badBoys.close()

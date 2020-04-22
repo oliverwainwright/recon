@@ -5,9 +5,16 @@ import random
 import re
 import time
 import subprocess
+import ipinfo
+import pprint
+
+# ipinfo access token
+access_token = '023b29ecb0b39c'
+handler = ipinfo.getHandler(access_token)
+details = handler.getDetails()
 
 # open for output naughty hosts to file
-badBoys = open("badBoys.txt", "w")
+badBoys = open("badBoysz.txt", "w")
 
 # read sort -u combined dnsbl into an array
 with open('sorted_bigDnsbl.txt', 'rt') as d:
@@ -55,6 +62,11 @@ def myBlacklist(ipAddress):
 			print("Bad Host Found " + str(ipAddress) + " in " + blacklist)
 			badBoys.write("Bad Host Found " + str(ipAddress) + " in " + blacklist + "\n")
 
+def myWhois(ipAddress):
+	details = handler.getDetails(ipAddress)
+	pprint.pprint(details.all)
+
+
 # read ip address allow list, conists of host ip addresses an cidr notation networks
 with open('test.txt', 'rt') as f:
 	for i in f:
@@ -66,8 +78,11 @@ with open('test.txt', 'rt') as f:
 
 			# pass cidr block to hosts() and loop through entire cidr block
 			for host in net.hosts():
-				myBlacklist(host)
+			
+				myWhois(str(host))
+				myBlacklist(str(host))
 		else:
-				myBlacklist(line)
+				myWhois(str(line))
+				myBlacklist(str(line))
 
 badBoys.close()
