@@ -7,6 +7,11 @@ import time
 import subprocess
 import ipinfo
 import pprint
+import logging
+
+logging.basicConfig(level = logging.INFO, filename="badBoys.log", format = '%(asctime)s %(message)s', filemode = 'w')
+logger = logging.getLogger()
+#logger.setlevel(logging.INFO)
 
 # ipinfo access token
 access_token = '023b29ecb0b39c'
@@ -60,12 +65,19 @@ def myBlacklist(ipAddress):
 		# if nsLookup contains /^127./, then we found a naughty host
 		if (ip):
 			print("Bad Host Found " + str(ipAddress) + " in " + blacklist)
-			badBoys.write("Bad Host Found " + str(ipAddress) + " in " + blacklist + "\n")
+			ip_line = "Bad Host Found " + str(ipAddress) + " in " + blacklist
+			print(ip_line)
+			logging.info(ip_line)
+#			badBoys.write(ip_line + "\n")
 
-def myWhois(ipAddress):
+def myipInfo(ipAddress):
 	ipAddress = str(ipAddress)
 	details = handler.getDetails(ipAddress)
-	pprint.pprint(details.all)
+	myipInfo_tuple = (ipAddress, details.hostname, details.org, details.city, details.region, details.country_name, details.postal)
+	myipInfo_line = ",".join(myipInfo_tuple)
+	print(ipAddress, details.hostname, details.org, details.city, details.region, details.country_name, details.postal)
+	logging.info(myipInfo_line)
+	#pprint.pprint(details.all)
 
 
 # read ip address allow list, conists of host ip addresses an cidr notation networks
@@ -80,10 +92,10 @@ with open('test.txt', 'rt') as f:
 			# pass cidr block to hosts() and loop through entire cidr block
 			for host in net.hosts():
 			
-				myWhois(host)
+				myipInfo(host)
 				myBlacklist(host)
 		else:
-				myWhois(line)
+				myipInfo(line)
 				myBlacklist(line)
 
 badBoys.close()

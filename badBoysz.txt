@@ -1,3 +1,0 @@
-Bad Host Found 146.20.151.112 in b.barracudacentral.org
-Bad Host Found 146.20.151.112 in spam.dnsbl.sorbs.net
-Bad Host Found 208.75.120.0 in dnsbl.spfbl.net
