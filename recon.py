@@ -6,20 +6,18 @@ import re
 import time
 import subprocess
 import ipinfo
+import whois
 import pprint
 import logging
 
+# basic logging config
 logging.basicConfig(level = logging.INFO, filename="badBoys.log", format = '%(asctime)s %(message)s', filemode = 'w')
 logger = logging.getLogger()
-#logger.setlevel(logging.INFO)
 
 # ipinfo access token
 access_token = '023b29ecb0b39c'
 handler = ipinfo.getHandler(access_token)
 details = handler.getDetails()
-
-# open for output naughty hosts to file
-badBoys = open("badBoysz.txt", "w")
 
 # read sort -u combined dnsbl into an array
 with open('sorted_bigDnsbl.txt', 'rt') as d:
@@ -64,24 +62,49 @@ def myBlacklist(ipAddress):
 
 		# if nsLookup contains /^127./, then we found a naughty host
 		if (ip):
-			print("Bad Host Found " + str(ipAddress) + " in " + blacklist)
 			ip_line = "Bad Host Found " + str(ipAddress) + " in " + blacklist
 			print(ip_line)
 			logging.info(ip_line)
-#			badBoys.write(ip_line + "\n")
+
+def myWhois(myHost):
+	if not myHost=='NONE':
+		domain = whois.query(myHost)
+		registrar = domain.registrar
+		creationDate = domain.creation_date
+		expireDate = domain.expiration_date
+		lastUpdated = domain.last_updated
+		domainName = domain.name
 
 def myipInfo(ipAddress):
 	ipAddress = str(ipAddress)
 	details = handler.getDetails(ipAddress)
-	myipInfo_tuple = (ipAddress, details.hostname, details.org, details.city, details.region, details.country_name, details.postal)
+	
+	# testing to see if details.hostname exists
+	try:
+		hostname = details.hostname
+	except:
+		hostname = "NONE"
+
+	if hostname=='NONE':
+		myipInfo_tuple = (ipAddress, hostname, details.org, details.city, details.region, details.country_name, details.postal)
+	else:
+		print("hostname is ", hostname)
+#		myWhois(hostname)
+		domain = whois.query(hostname)
+		registrar = domain.registrar
+		creationDate = domain.creation_date
+		expireDate = domain.expiration_date
+		lastUpdated = domain.last_updated
+		domainName = domain.name
+		myipInfo_tuple = (ipAddress, hostname, domainName, details.org, details.city, details.region, details.country_name, details.postal, registrar, creationDate, expireDate, lastUpdated)
+
 	myipInfo_line = ",".join(myipInfo_tuple)
-	print(ipAddress, details.hostname, details.org, details.city, details.region, details.country_name, details.postal)
+	print(myipInfo_line)
+#	print(ipAddress, hostname, details.org, details.city, details.region, details.country_name, details.postal)
 	logging.info(myipInfo_line)
-	#pprint.pprint(details.all)
 
-
-# read ip address allow list, conists of host ip addresses an cidr notation networks
-with open('test.txt', 'rt') as f:
+# read combo ip address block + allow list, consists of host ip addresses an cidr notation networks
+with open('block_allow.txt', 'rt') as f:
 	for i in f:
 		# strip newline from array member
 		line = i.rstrip('\r\n')
@@ -93,9 +116,8 @@ with open('test.txt', 'rt') as f:
 			for host in net.hosts():
 			
 				myipInfo(host)
-				myBlacklist(host)
+#				myBlacklist(host)
 		else:
 				myipInfo(line)
-				myBlacklist(line)
+#				myBlacklist(line)
 
-badBoys.close()
