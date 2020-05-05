@@ -90,12 +90,37 @@ def myipInfo(ipAddress):
 	else:
 		print("hostname is ", hostname)
 #		myWhois(hostname)
-		domain = whois.query(hostname)
-		registrar = domain.registrar
-		creationDate = domain.creation_date
-		expireDate = domain.expiration_date
-		lastUpdated = domain.last_updated
-		domainName = domain.name
+
+		# testing to see if whois.query(hostname) returns valid domain
+		if ".ch"==hostname[-3:]:
+			domain = ""
+			registrar = ""
+			creationDate = ""
+			expireDate = ""
+			lastUpdated = ""
+			domainName = ""
+		else:
+			domain = whois.query(hostname)
+			registrar = domain.registrar
+
+			try:
+				creationDate = domain.creation_date.strftime('%m/%d/%y %I:%M %S %p')
+			except:
+				creationDate = ""
+			try:
+				expireDate = domain.expiration_date.strftime('%m/%d/%y %I:%M %S %p')
+			except:
+				expireDate = ""
+			try:
+				lastUpdated = domain.last_updated.strftime('%m/%d/%y %I:%M %S %p')
+			except:
+				lastUpdated = ""
+
+			domainName = domain.name
+#			print("creationDate ", creationDate)
+#			print("expireDate ", expireDate)
+#			print("lastUpdated ", lastUpdated)
+
 		myipInfo_tuple = (ipAddress, hostname, domainName, details.org, details.city, details.region, details.country_name, details.postal, registrar, creationDate, expireDate, lastUpdated)
 
 	myipInfo_line = ",".join(myipInfo_tuple)
@@ -103,6 +128,7 @@ def myipInfo(ipAddress):
 #	print(ipAddress, hostname, details.org, details.city, details.region, details.country_name, details.postal)
 	logging.info(myipInfo_line)
 
+# THIS IS THE MAINLINE
 # read combo ip address block + allow list, consists of host ip addresses an cidr notation networks
 with open('block_allow.txt', 'rt') as f:
 	for i in f:
@@ -116,8 +142,8 @@ with open('block_allow.txt', 'rt') as f:
 			for host in net.hosts():
 			
 				myipInfo(host)
-#				myBlacklist(host)
+				myBlacklist(host)
 		else:
 				myipInfo(line)
-#				myBlacklist(line)
+				myBlacklist(line)
 
