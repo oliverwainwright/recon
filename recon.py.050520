@@ -11,7 +11,7 @@ import pprint
 import logging
 
 # basic logging config
-logging.basicConfig(level = logging.INFO, filename="badBoys.log", format = '%(asctime)s.%(msecs)03d %(levelname)s:\t %(message)s', datefmt="%Y-%m-%d %H:%M:%S", filemode = 'w')
+logging.basicConfig(level = logging.INFO, filename="badBoys.log", format = '%(asctime)s %(message)s', filemode = 'w')
 logger = logging.getLogger()
 
 # ipinfo access token
@@ -66,6 +66,15 @@ def myBlacklist(ipAddress):
 			print(ip_line)
 			logging.info(ip_line)
 
+def myWhois(myHost):
+	if not myHost=='NONE':
+		domain = whois.query(myHost)
+		registrar = domain.registrar
+		creationDate = domain.creation_date
+		expireDate = domain.expiration_date
+		lastUpdated = domain.last_updated
+		domainName = domain.name
+
 def myipInfo(ipAddress):
 	ipAddress = str(ipAddress)
 	details = handler.getDetails(ipAddress)
@@ -74,66 +83,70 @@ def myipInfo(ipAddress):
 	try:
 		hostname = details.hostname
 	except:
+		hostname = "NONE"
+
+	if hostname=='NONE':
 		hostname = ""
-
-	try:
-		org = details.org
-	except:
-		org = ""
-	try:
-		city = details.city
-	except:
-		city = ""
-	try:
-		region = details.region
-	except:
-		region = ""
-	try:
-		country_name = details.country_name
-	except:
-		country_name = ""
-	try:
-		postal = details.postal
-	except:
-		postal = ""
-	
-	print("hostname is ", hostname)
-
-	# testing to see if whois.query(hostname) returns valid domain
-	if ".ch"==hostname[-3:]:
-		domain = ""
-		registrar = ""
-		creationDate = ""
-		expireDate = ""
-		lastUpdated = ""
-		domainName = ""
+		try:
+			org = details.org
+		except:
+			org = ""
+		try:
+			city = details.city
+		except:
+			city = ""
+		try:
+			region = details.region
+		except:
+			region = ""
+		try:
+			country_name = details.country_name
+		except:
+			country_name = ""
+		try:
+			postal = details.postal
+		except:
+			postal = ""
+		myipInfo_tuple = (ipAddress, hostname, org, city, region, country_name, postal)
 	else:
-		domain = whois.query(hostname)
-		try:
-			registrar = domain.registrar
-		except:
-			registrar = ""
-		try:
-			creationDate = domain.creation_date.strftime('%m/%d/%y %I:%M %S %p')
-		except:
-			creationDate = ""
-		try:
-			expireDate = domain.expiration_date.strftime('%m/%d/%y %I:%M %S %p')
-		except:
-			expireDate = ""
-		try:
-			lastUpdated = domain.last_updated.strftime('%m/%d/%y %I:%M %S %p')
-		except:
-			lastUpdated = ""
-		try:
-			domainName = domain.name
-		except:
-			domainName = ""
+		print("hostname is ", hostname)
+#		myWhois(hostname)
 
-	myipInfo_tuple = (ipAddress, hostname, domainName, org, city, region, country_name, postal, registrar, creationDate, expireDate, lastUpdated)
+		# testing to see if whois.query(hostname) returns valid domain
+		if ".ch"==hostname[-3:]:
+			domain = ""
+			registrar = ""
+			creationDate = ""
+			expireDate = ""
+			lastUpdated = ""
+			domainName = ""
+		else:
+			domain = whois.query(hostname)
+			registrar = domain.registrar
+
+			try:
+				creationDate = domain.creation_date.strftime('%m/%d/%y %I:%M %S %p')
+			except:
+				creationDate = ""
+			try:
+				expireDate = domain.expiration_date.strftime('%m/%d/%y %I:%M %S %p')
+			except:
+				expireDate = ""
+			try:
+				lastUpdated = domain.last_updated.strftime('%m/%d/%y %I:%M %S %p')
+			except:
+				lastUpdated = ""
+
+			domainName = domain.name
+#			print("creationDate ", creationDate)
+#			print("expireDate ", expireDate)
+#			print("lastUpdated ", lastUpdated)
+
+		myipInfo_tuple = (ipAddress, hostname, domainName, org, city, region, country_name, postal, registrar, creationDate, expireDate, lastUpdated)
 
 	myipInfo_line = ",".join(myipInfo_tuple)
 	print(myipInfo_line)
+#	print(ipAddress, hostname, details.org, details.city, details.region, details.country_name, details.postal)
 	logging.info(myipInfo_line)
 
 # THIS IS THE MAINLINE
