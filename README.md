@@ -3,3 +3,6 @@
 1. geolocation
 2. domain registration
 3. dnsrbl status
+
+## pre-requisites
+python modules ipinfo, whois
